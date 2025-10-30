@@ -5,10 +5,11 @@ const router = express.Router();
 
 router.post("/drivers", driverController.registerDriver);
 router.get("/drivers", driverController.getAllDrivers);
-router.get("/drivers/:id", driverController.getDriverById);
-router.put("/drivers/:id", driverController.updateDriver);
-router.delete("/drivers/:id", driverController.deleteDriver);
-router.patch("/drivers/:id/status", driverController.changeAvailability);
-router.get("/drivers/:id/trips", driverController.getTripsByDriver);
+router.get("/drivers/available", driverController.findAvailableDrivers);
+router.get("/drivers/:driver_id", driverController.getDriverById);
+router.patch("/drivers/:driver_id", driverController.updateDriver);
+router.delete("/drivers/:driver_id", driverController.deleteDriver);
+router.patch("/drivers/:driver_id/status", driverController.setStatus);
+router.get("/drivers/:driver_id/trips", driverController.getTripsByDriver);
 
 export default router;
