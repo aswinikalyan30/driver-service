@@ -1,13 +1,17 @@
 meta {
-  name: Find Available Drivers
+  name: Find Available Drivers - Vehicle type
   type: http
-  seq: 1
+  seq: 4
 }
 
 get {
-  url: {{baseUrl}}/drivers/available
+  url: {{baseUrl}}/drivers/available?vehicleType=SUV
   body: none
   auth: none
+}
+
+query {
+  vehicleType: SUV
 }
 
 docs {

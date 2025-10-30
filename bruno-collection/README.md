@@ -33,10 +33,25 @@ bruno-collection/
 
 ### Import Collection
 
-1. Open Bruno
-2. Click **"Open Collection"**
-3. Navigate to this directory: `/Users/aswinik/driver-service/bruno-collection`
-4. Select the folder and click **"Open"**
+**Method 1: Open Collection (Recommended)**
+1. Open Bruno application
+2. Click **"Open Collection"** button (top left) or use **File → Open Collection**
+3. In the file picker, navigate to: `/Users/aswinik/driver-service`
+4. Select the **`bruno-collection`** folder (not individual files inside it)
+5. Click **"Open"** or **"Select Folder"**
+
+**Method 2: Drag and Drop**
+1. Open Bruno application
+2. Open Finder and navigate to `/Users/aswinik/driver-service`
+3. Drag the **`bruno-collection`** folder into Bruno window
+4. Collection will be imported automatically
+
+**Method 3: File Menu**
+1. In Bruno, go to **File → Open Collection**
+2. Browse to `/Users/aswinik/driver-service/bruno-collection`
+3. Click **"Open"**
+
+> **Important**: You must select the **folder** (`bruno-collection`), not individual `.bru` files
 
 ## 🌍 Environments
 

@@ -1,0 +1,385 @@
+{
+  "name": "Driver Service API",
+  "version": "1",
+  "items": [
+    {
+      "type": "folder",
+      "name": "Availability (Inter-Service)",
+      "items": [
+        {
+          "type": "http",
+          "name": "Find Available Drivers",
+          "seq": 1,
+          "request": {
+            "url": "{{baseUrl}}/drivers/available",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Set Driver Status - Mark Available",
+          "seq": 4,
+          "request": {
+            "url": "{{baseUrl}}/drivers/1/status",
+            "method": "PATCH",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"is_active\": true\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Set Driver Status - Mark Busy",
+          "seq": 3,
+          "request": {
+            "url": "{{baseUrl}}/drivers/1/status",
+            "method": "PATCH",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"is_active\": false\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Find Available Drivers - Vehicle type",
+          "seq": 4,
+          "request": {
+            "url": "{{baseUrl}}/drivers/available?vehicleType=SUV",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": [
+              {
+                "name": "vehicleType",
+                "value": "SUV",
+                "enabled": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Drivers",
+      "items": [
+        {
+          "type": "http",
+          "name": "Delete Driver",
+          "seq": 5,
+          "request": {
+            "url": "{{baseUrl}}/drivers/1",
+            "method": "DELETE",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get All Drivers",
+          "seq": 2,
+          "request": {
+            "url": "{{baseUrl}}/drivers",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Driver By ID",
+          "seq": 3,
+          "request": {
+            "url": "{{baseUrl}}/drivers/1",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Register Driver",
+          "seq": 1,
+          "request": {
+            "url": "{{baseUrl}}/drivers",
+            "method": "POST",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"John Doe\",\n  \"phone\": \"9876543210\",\n  \"vehicle_type\": \"SUV\",\n  \"vehicle_plate\": \"KA01AB1234\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "Update Driver",
+          "seq": 4,
+          "request": {
+            "url": "{{baseUrl}}/drivers/1",
+            "method": "PATCH",
+            "headers": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"Updated Driver Name\",\n  \"vehicle_type\": \"Sedan\",\n  \"vehicle_plate\": \"KA99ZZ9999\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "System",
+      "items": [
+        {
+          "type": "http",
+          "name": "Health Check",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:5001/health",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Trips",
+      "items": [
+        {
+          "type": "http",
+          "name": "Get Driver Trips",
+          "seq": 1,
+          "request": {
+            "url": "{{baseUrl}}/drivers/1/trips",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        }
+      ]
+    }
+  ],
+  "activeEnvironmentUid": "unK23iR6uWZxPjRE3I4Wc",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "baseUrl",
+          "value": "http://localhost:5001/api/v1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        }
+      ],
+      "name": "Local"
+    }
+  ]
+}

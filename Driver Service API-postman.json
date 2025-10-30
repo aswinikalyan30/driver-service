@@ -1,0 +1,170 @@
+{
+  "info": {
+    "name": "Driver Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Availability (Inter-Service)",
+      "item": [
+        {
+          "name": "Find Available Drivers",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/available"
+          }
+        },
+        {
+          "name": "Set Driver Status - Mark Available",
+          "event": [],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/1/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Set Driver Status - Mark Busy",
+          "event": [],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/1/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Find Available Drivers - Vehicle type",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/available?vehicleType=SUV"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Drivers",
+      "item": [
+        {
+          "name": "Delete Driver",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/1"
+          }
+        },
+        {
+          "name": "Get All Drivers",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/drivers"
+          }
+        },
+        {
+          "name": "Get Driver By ID",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/1"
+          }
+        },
+        {
+          "name": "Register Driver",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/drivers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"phone\": \"9876543210\",\n  \"vehicle_type\": \"SUV\",\n  \"vehicle_plate\": \"KA01AB1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Driver",
+          "event": [],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Driver Name\",\n  \"vehicle_type\": \"Sedan\",\n  \"vehicle_plate\": \"KA99ZZ9999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:5001/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trips",
+      "item": [
+        {
+          "name": "Get Driver Trips",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/drivers/1/trips"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
