@@ -1,0 +1,43 @@
+meta {
+  name: Set Driver Status - Mark Busy
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/drivers/1/status
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "is_active": false
+  }
+}
+
+docs {
+  # Set Driver Status - Mark Busy (Inter-Service)
+  
+  **CRITICAL ENDPOINT** - Trip Service calls this IMMEDIATELY after assigning a trip.
+  
+  Marks driver as unavailable (busy) so they don't receive multiple trip assignments.
+  
+  ## Path Parameters
+  - `driver_id`: Unique identifier of the driver
+  
+  ## Request Body
+  - `is_active`: false (mark as busy)
+  
+  ## Response
+  - Status: 200 OK
+  - Returns: Status update confirmation with driver object
+  - Status: 404 Not Found - Driver doesn't exist
+  
+  ## Used By
+  - **Trip Service** (Phase 1: Assignment - mark driver busy)
+  - Driver App (driver goes offline)
+  
+  ## Assignment Flow - Step 2
+  Trip Service calls this immediately after selecting a driver to prevent double-booking.
+}

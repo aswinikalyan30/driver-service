@@ -1,0 +1,28 @@
+meta {
+  name: Get Driver By ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/drivers/1
+  body: none
+  auth: none
+}
+
+docs {
+  # Get Driver By ID
+  
+  Retrieve detailed information about a specific driver.
+  
+  ## Path Parameters
+  - `driver_id`: Unique identifier of the driver
+  
+  ## Response
+  - Status: 200 OK - Driver found
+  - Status: 404 Not Found - Driver doesn't exist
+  
+  ## Used By
+  - Driver App (profile view)
+  - Trip Service (driver details)
+}

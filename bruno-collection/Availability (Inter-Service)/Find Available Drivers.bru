@@ -1,0 +1,38 @@
+meta {
+  name: Find Available Drivers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/drivers/available?vehicleType=SUV
+  body: none
+  auth: none
+}
+
+params:query {
+  vehicleType: SUV
+}
+
+docs {
+  # Find Available Drivers (Inter-Service)
+  
+  **CRITICAL ENDPOINT** - Used by Trip Service to find available drivers for trip assignment.
+  
+  Returns drivers where `is_active = true` and optionally filtered by vehicle type.
+  
+  ## Query Parameters (optional)
+  - `vehicleType` or `vehicle_type`: Filter by vehicle type (SUV, Sedan, Hatchback, Auto, Bike)
+  
+  ## Response
+  - Status: 200 OK
+  - Returns: Array of available driver objects
+  
+  ## Used By
+  - **Trip Service** (finding drivers for trip assignment)
+  
+  ## Assignment Flow
+  1. Trip Service calls this endpoint to find available drivers
+  2. Trip Service selects best driver
+  3. Trip Service calls `/drivers/:id/status` to mark driver busy
+}

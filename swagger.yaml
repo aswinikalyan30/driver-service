@@ -1,0 +1,537 @@
+openapi: 3.0.3
+info:
+  title: Driver Service API
+  description: |
+    Microservice for managing driver profiles, availability, and vehicle information in a ride-hailing platform.
+    
+    ## Key Features
+    - Driver CRUD operations
+    - Real-time availability management
+    - Inter-service communication with Trip Service
+    - Vehicle information management
+    
+    ## Inter-Service Communication
+    - **Trip Service** uses `/drivers/available` to find drivers and `/drivers/{driver_id}/status` to manage availability
+    - **Driver App** uses all endpoints for driver self-service
+  version: 1.0.0
+  contact:
+    name: Driver Service Team
+    email: support@driverservice.com
+
+servers:
+  - url: http://localhost:5001/api/v1
+    description: Local development server
+  - url: https://api.example.com/api/v1
+    description: Production server
+
+tags:
+  - name: Drivers
+    description: Driver profile and CRUD operations
+  - name: Availability
+    description: Driver availability management (Inter-Service)
+  - name: Trips
+    description: Driver trip history
+  - name: System
+    description: System health and monitoring
+
+paths:
+  /drivers:
+    post:
+      tags:
+        - Drivers
+      summary: Register a new driver
+      description: Create a new driver profile with vehicle information
+      operationId: registerDriver
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDriverRequest'
+            examples:
+              suv_driver:
+                summary: SUV Driver
+                value:
+                  name: "John Doe"
+                  phone: "9876543210"
+                  vehicle_type: "SUV"
+                  vehicle_plate: "KA01AB1234"
+              sedan_driver:
+                summary: Sedan Driver
+                value:
+                  name: "Jane Smith"
+                  phone: "9123456789"
+                  vehicle_type: "Sedan"
+                  vehicle_plate: "KA05XY5678"
+      responses:
+        '201':
+          description: Driver registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+              example:
+                driver_id: 1
+                name: "John Doe"
+                phone: "9876543210"
+                vehicle_type: "SUV"
+                vehicle_plate: "KA01AB1234"
+                is_active: true
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Database connection failed"
+    
+    get:
+      tags:
+        - Drivers
+      summary: Get all drivers
+      description: Retrieve a list of all registered drivers
+      operationId: getAllDrivers
+      responses:
+        '200':
+          description: List of all drivers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Driver'
+              example:
+                - driver_id: 1
+                  name: "Driver1"
+                  phone: "9743818976"
+                  vehicle_type: "SUV"
+                  vehicle_plate: "KA98DX4733"
+                  is_active: true
+                - driver_id: 2
+                  name: "Driver2"
+                  phone: "9857811574"
+                  vehicle_type: "Sedan"
+                  vehicle_plate: "KA13IT8615"
+                  is_active: true
+
+  /drivers/available:
+    get:
+      tags:
+        - Availability
+      summary: Find available drivers (Inter-Service)
+      description: |
+        **CRITICAL ENDPOINT** - Used by Trip Service to find available drivers for trip assignment.
+        
+        Returns drivers where `is_active = true` and optionally filtered by vehicle type.
+        
+        ## Assignment Flow - Step 1
+        Trip Service calls this endpoint to find available drivers matching the required vehicle type.
+      operationId: findAvailableDrivers
+      parameters:
+        - name: vehicleType
+          in: query
+          description: Filter by vehicle type (also accepts vehicle_type)
+          required: false
+          schema:
+            type: string
+            enum: [SUV, Sedan, Hatchback, Auto, Bike]
+          example: SUV
+      responses:
+        '200':
+          description: List of available drivers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Driver'
+              example:
+                - driver_id: 1
+                  name: "Driver1"
+                  phone: "9743818976"
+                  vehicle_type: "SUV"
+                  vehicle_plate: "KA98DX4733"
+                  is_active: true
+                - driver_id: 5
+                  name: "Driver5"
+                  phone: "9331760835"
+                  vehicle_type: "SUV"
+                  vehicle_plate: "KA65SH2215"
+                  is_active: true
+
+  /drivers/{driver_id}:
+    get:
+      tags:
+        - Drivers
+      summary: Get driver by ID
+      description: Retrieve detailed information about a specific driver
+      operationId: getDriverById
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      responses:
+        '200':
+          description: Driver found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+              example:
+                driver_id: 1
+                name: "Test Driver"
+                phone: "9876543210"
+                vehicle_type: "SUV"
+                vehicle_plate: "KA01AB1234"
+                is_active: true
+        '404':
+          description: Driver not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+              example:
+                message: "Driver not found"
+    
+    patch:
+      tags:
+        - Drivers
+      summary: Update driver profile
+      description: |
+        Update driver profile information. Supports partial updates - only send fields to update.
+        
+        All fields are optional in the request body.
+      operationId: updateDriver
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDriverRequest'
+            examples:
+              update_name:
+                summary: Update name only
+                value:
+                  name: "Updated Driver Name"
+              update_vehicle:
+                summary: Update vehicle info
+                value:
+                  vehicle_type: "Sedan"
+                  vehicle_plate: "KA99ZZ9999"
+              full_update:
+                summary: Update multiple fields
+                value:
+                  name: "Updated Name"
+                  phone: "9111111111"
+                  vehicle_type: "Hatchback"
+                  vehicle_plate: "KA11AA1111"
+      responses:
+        '200':
+          description: Driver updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+              example:
+                driver_id: 1
+                name: "Updated Driver Name"
+                phone: "9876543210"
+                vehicle_type: "Sedan"
+                vehicle_plate: "KA99ZZ9999"
+                is_active: true
+        '404':
+          description: Driver not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+    
+    delete:
+      tags:
+        - Drivers
+      summary: Delete driver
+      description: Permanently remove a driver from the system
+      operationId: deleteDriver
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      responses:
+        '200':
+          description: Driver deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+              example:
+                message: "Driver deleted successfully"
+        '404':
+          description: Driver not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+  /drivers/{driver_id}/status:
+    patch:
+      tags:
+        - Availability
+      summary: Set driver status (Inter-Service & Driver App)
+      description: |
+        **CRITICAL ENDPOINT** - Used by Trip Service and Driver App to manage driver availability.
+        
+        ## Used By
+        - **Trip Service** - Marks driver busy when assigning trip, marks available after payment
+        - **Driver App** - Driver toggles their own availability (online/offline)
+        
+        ## Assignment Flow
+        - **Step 2 (Assignment)**: Trip Service calls with `is_active: false` immediately after selecting driver
+        - **Step 3 (Completion)**: Trip Service calls with `is_active: true` after payment completes
+      operationId: setDriverStatus
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetStatusRequest'
+            examples:
+              mark_busy:
+                summary: Mark driver busy (Trip Service - Assignment)
+                value:
+                  is_active: false
+              mark_available:
+                summary: Mark driver available (Trip Service - After payment)
+                value:
+                  is_active: true
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusUpdateResponse'
+              examples:
+                marked_busy:
+                  summary: Driver marked busy
+                  value:
+                    message: "Status updated"
+                    driver:
+                      driver_id: 1
+                      name: "Test Driver"
+                      phone: "9876543210"
+                      vehicle_type: "SUV"
+                      vehicle_plate: "KA01AB1234"
+                      is_active: false
+                marked_available:
+                  summary: Driver marked available
+                  value:
+                    message: "Status updated"
+                    driver:
+                      driver_id: 1
+                      name: "Test Driver"
+                      phone: "9876543210"
+                      vehicle_type: "SUV"
+                      vehicle_plate: "KA01AB1234"
+                      is_active: true
+        '404':
+          description: Driver not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+  /drivers/{driver_id}/trips:
+    get:
+      tags:
+        - Trips
+      summary: Get driver trip history
+      description: |
+        Retrieve trip history for a specific driver.
+        
+        This endpoint calls Trip Service API internally. If Trip Service is unavailable, returns mock data.
+      operationId: getDriverTrips
+      parameters:
+        - $ref: '#/components/parameters/DriverIdParam'
+      responses:
+        '200':
+          description: Driver trip history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trip'
+              example:
+                - trip_id: 1
+                  status: "COMPLETED"
+                  amount: 250
+                - trip_id: 2
+                  status: "CANCELLED"
+                  amount: 0
+
+  /health:
+    get:
+      tags:
+        - System
+      summary: Health check
+      description: Simple endpoint to verify the service is running
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Driver Service is running 🚗"
+
+components:
+  parameters:
+    DriverIdParam:
+      name: driver_id
+      in: path
+      description: Unique identifier of the driver
+      required: true
+      schema:
+        type: integer
+        format: int64
+      example: 1
+
+  schemas:
+    Driver:
+      type: object
+      required:
+        - driver_id
+        - name
+        - phone
+        - is_active
+      properties:
+        driver_id:
+          type: integer
+          format: int64
+          description: Unique identifier for the driver
+          example: 1
+        name:
+          type: string
+          description: Driver's full name
+          example: "John Doe"
+        phone:
+          type: string
+          description: Driver's phone number (unique)
+          example: "9876543210"
+        vehicle_type:
+          type: string
+          description: Type of vehicle
+          enum: [SUV, Sedan, Hatchback, Auto, Bike]
+          example: "SUV"
+        vehicle_plate:
+          type: string
+          description: Vehicle registration plate number
+          example: "KA01AB1234"
+        is_active:
+          type: boolean
+          description: Driver availability status
+          default: true
+          example: true
+
+    CreateDriverRequest:
+      type: object
+      required:
+        - name
+        - phone
+      properties:
+        name:
+          type: string
+          description: Driver's full name
+          example: "John Doe"
+        phone:
+          type: string
+          description: Driver's phone number (must be unique)
+          example: "9876543210"
+        vehicle_type:
+          type: string
+          description: Type of vehicle
+          enum: [SUV, Sedan, Hatchback, Auto, Bike]
+          example: "SUV"
+        vehicle_plate:
+          type: string
+          description: Vehicle registration plate number
+          example: "KA01AB1234"
+
+    UpdateDriverRequest:
+      type: object
+      description: All fields are optional - only send fields to update
+      properties:
+        name:
+          type: string
+          description: Driver's full name
+          example: "Updated Driver Name"
+        phone:
+          type: string
+          description: Driver's phone number (must be unique)
+          example: "9111111111"
+        vehicle_type:
+          type: string
+          description: Type of vehicle
+          enum: [SUV, Sedan, Hatchback, Auto, Bike]
+          example: "Sedan"
+        vehicle_plate:
+          type: string
+          description: Vehicle registration plate number
+          example: "KA99ZZ9999"
+
+    SetStatusRequest:
+      type: object
+      required:
+        - is_active
+      properties:
+        is_active:
+          type: boolean
+          description: Driver availability status (true = available, false = busy)
+          example: false
+
+    StatusUpdateResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Status updated"
+        driver:
+          $ref: '#/components/schemas/Driver'
+
+    Trip:
+      type: object
+      properties:
+        trip_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum: [REQUESTED, ACCEPTED, COMPLETED, CANCELLED, UNPAID]
+          example: "COMPLETED"
+        amount:
+          type: number
+          format: float
+          example: 250.0
+
+    SuccessMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Operation successful"
+
+    NotFoundError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Driver not found"
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "An error occurred"

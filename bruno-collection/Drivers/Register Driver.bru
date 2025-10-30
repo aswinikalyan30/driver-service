@@ -1,0 +1,40 @@
+meta {
+  name: Register Driver
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/drivers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "John Doe",
+    "phone": "9876543210",
+    "vehicle_type": "SUV",
+    "vehicle_plate": "KA01AB1234"
+  }
+}
+
+docs {
+  # Register Driver
+  
+  Create a new driver profile with vehicle information.
+  
+  ## Request Body
+  - `name` (required): Driver's full name
+  - `phone` (required, unique): Driver's phone number
+  - `vehicle_type` (optional): Type of vehicle (SUV, Sedan, Hatchback, Auto, Bike)
+  - `vehicle_plate` (optional): Vehicle registration plate number
+  
+  ## Response
+  - Status: 201 Created
+  - Returns: Driver object with `driver_id` and `is_active: true`
+  
+  ## Used By
+  - Admin Panel
+  - Driver App (registration)
+}

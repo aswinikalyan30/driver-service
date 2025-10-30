@@ -1,0 +1,32 @@
+meta {
+  name: Get Driver Trips
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/drivers/1/trips
+  body: none
+  auth: none
+}
+
+docs {
+  # Get Driver Trips
+  
+  Retrieve trip history for a specific driver.
+  
+  Calls Trip Service API to fetch trips associated with this driver.
+  
+  ## Path Parameters
+  - `driver_id`: Unique identifier of the driver
+  
+  ## Response
+  - Status: 200 OK
+  - Returns: Array of trip objects
+  
+  ## Used By
+  - Driver App (trip history view)
+  
+  ## Note
+  This endpoint calls Trip Service internally. If Trip Service is unavailable, returns mock data.
+}

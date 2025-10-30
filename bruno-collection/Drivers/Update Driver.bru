@@ -1,0 +1,41 @@
+meta {
+  name: Update Driver
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/drivers/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Updated Driver Name",
+    "vehicle_type": "Sedan",
+    "vehicle_plate": "KA99ZZ9999"
+  }
+}
+
+docs {
+  # Update Driver
+  
+  Update driver profile information. Supports partial updates (only send fields to update).
+  
+  ## Path Parameters
+  - `driver_id`: Unique identifier of the driver
+  
+  ## Request Body (all optional)
+  - `name`: Driver's full name
+  - `phone`: Driver's phone number (must be unique)
+  - `vehicle_type`: Type of vehicle
+  - `vehicle_plate`: Vehicle registration plate
+  
+  ## Response
+  - Status: 200 OK - Driver updated
+  - Status: 404 Not Found - Driver doesn't exist
+  
+  ## Used By
+  - Driver App (profile updates)
+}

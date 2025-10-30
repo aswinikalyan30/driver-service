@@ -1,0 +1,46 @@
+meta {
+  name: Set Driver Status - Mark Available
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/drivers/1/status
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "is_active": true
+  }
+}
+
+docs {
+  # Set Driver Status - Mark Available (Inter-Service)
+  
+  **CRITICAL ENDPOINT** - Trip Service calls this after trip completion and payment.
+  
+  Marks driver as available again so they can receive new trip assignments.
+  
+  ## Path Parameters
+  - `driver_id`: Unique identifier of the driver
+  
+  ## Request Body
+  - `is_active`: true (mark as available)
+  
+  ## Response
+  - Status: 200 OK
+  - Returns: Status update confirmation with driver object
+  - Status: 404 Not Found - Driver doesn't exist
+  
+  ## Used By
+  - **Trip Service** (Phase 2: After payment completes)
+  - Driver App (driver goes online)
+  
+  ## Assignment Flow - Step 3
+  Trip Service calls this after:
+  - Trip is completed
+  - Payment is processed (SUCCESS or FAILURE)
+  - Trip status is finalized (COMPLETED or UNPAID)
+}

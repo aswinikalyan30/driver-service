@@ -1,0 +1,27 @@
+meta {
+  name: Delete Driver
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/drivers/1
+  body: none
+  auth: none
+}
+
+docs {
+  # Delete Driver
+  
+  Permanently remove a driver from the system.
+  
+  ## Path Parameters
+  - `driver_id`: Unique identifier of the driver
+  
+  ## Response
+  - Status: 200 OK - Driver deleted successfully
+  - Status: 404 Not Found - Driver doesn't exist
+  
+  ## Used By
+  - Admin Panel
+}

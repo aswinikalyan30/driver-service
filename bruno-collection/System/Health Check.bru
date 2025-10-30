@@ -1,0 +1,25 @@
+meta {
+  name: Health Check
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:5001/health
+  body: none
+  auth: none
+}
+
+docs {
+  # Health Check
+  
+  Simple endpoint to verify the service is running.
+  
+  ## Response
+  - Status: 200 OK
+  - Returns: "Driver Service is running 🚗"
+  
+  ## Used By
+  - Monitoring systems
+  - Load balancers
+}
