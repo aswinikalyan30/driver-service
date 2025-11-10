@@ -57,3 +57,105 @@ export const setStatus = async (req, res) => {
     ? res.json({ message: "Status updated", driver: updated })
     : res.status(404).json({ message: "Driver not found" });
 };
+
+export const getAvailableTrips = async (req, res) => {
+  try {
+    const trips = await driverService.getAvailableTrips();
+    res.json({
+      message: "Available trips retrieved successfully",
+      trips
+    });
+  } catch (err) {
+    console.error('Error fetching available trips:', err);
+    res.status(err.status || 500).json({
+      message: err.message || 'Failed to fetch available trips',
+      error: err.error
+    });
+  }
+};
+
+export const acceptTrip = async (req, res) => {
+  try {
+    const { trip_id } = req.params;
+    const { driver_id } = req.params;
+
+    // Validate input
+    if (!driver_id) {
+      return res.status(400).json({ 
+        message: "driver_id is required in request body" 
+      });
+    }
+
+    const result = await driverService.acceptTrip(trip_id, driver_id);
+    
+    res.status(200).json({
+      message: "Trip accepted successfully",
+      data: result.data
+    });
+  } catch (err) {
+    console.error('Error accepting trip:', err);
+    res.status(err.status || 500).json({
+      message: err.message || 'Failed to accept trip',
+      error: err.error
+    });
+  }
+};
+
+export const cancelTrip = async (req, res) => {
+  try {
+    const { trip_id } = req.params;
+
+    // Validate input
+    if (!trip_id) {
+      return res.status(400).json({ 
+        message: "trip_id is required" 
+      });
+    }
+
+    const result = await driverService.cancelTrip(trip_id);
+    
+    res.status(200).json({
+      message: "Trip cancelled successfully",
+      data: result.data
+    });
+  } catch (err) {
+    console.error('Error cancelling trip:', err);
+    res.status(err.status || 500).json({
+      message: err.message || 'Failed to cancel trip',
+      error: err.error
+    });
+  }
+};
+
+export const endTrip = async (req, res) => {
+  try {
+    const { trip_id } = req.params;
+    const { distance } = req.body;
+
+    // Validate input
+    if (!trip_id) {
+      return res.status(400).json({ 
+        message: "trip_id is required" 
+      });
+    }
+
+    if (!distance) {
+      return res.status(400).json({ 
+        message: "distance is required in request body" 
+      });
+    }
+
+    const result = await driverService.endTrip(trip_id, distance);
+    
+    res.status(200).json({
+      message: "Trip ended successfully",
+      data: result.data
+    });
+  } catch (err) {
+    console.error('Error ending trip:', err);
+    res.status(err.status || 500).json({
+      message: err.message || 'Failed to end trip',
+      error: err.error
+    });
+  }
+};
